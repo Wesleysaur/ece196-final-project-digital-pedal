@@ -29,7 +29,13 @@ float dry_wet_amount;
 float delay_amount;
 float volume_ctrl;
 float feedback_amount;
-float pitch_shift;
+float mod_freq;
+
+const DW_PIN #error //which pin to control dry 
+const D_AMNT_PIN #error //which pin to control delay amount
+const V_CTRL_PIN #error //volume control pin
+const FB_AMNT_PIN #error //feedback amount pin
+const MOD_FREQ_PIN #error //which pin controls frequency of sinusoid
 
 
 void setup() {
@@ -40,7 +46,7 @@ void setup() {
   dry_wet_amount = .5;
   volume_ctrl = .6;
   delay_amount = 0;
-  pitch_shift = 0;
+  mod_freq = 0;
   feedback_amount = 0;
 
   //Initialize feedback mixer
@@ -81,10 +87,61 @@ void loop() {
   Serial.print(",");
   Serial.println(AudioMemoryUsageMax());
 
-
-  /*
-   * Set sine parameters
-   */
+  
+  
   
   
 }
+
+/**
+ * I seperated all of these into functions so if we decide to make make any of them
+ * nonlinear we can edit it without impacting anything else
+ */
+
+/*
+ * get_dw_amount()
+ * Reads the dry wet amount from analog reading the get dw pin and then scales it from 0-1
+ */
+float get_dw_amount() {
+  return analogRead(DW_PIN)/1024.0;
+}
+
+/*
+ * get_delay_amount()
+ * reads from the delay amount pin and then scales it to the maximum possible delay value
+ * calculated by dividing the analog read by 1024, and multiplying that by the max delay val
+ * for our hardware (teensy 3.2), 449ms
+ * 
+ * 449/1024.0 = 0.4384765625
+ */
+ float get_delay_amount() {
+  return analogRead(D_AMNT_PIN)*0.4384765625;
+ }
+
+/**
+ * get_volume_ctrl()
+ * reads the volume and scales from 0-1
+ */
+ float get_volume_ctrl() {
+  return analogRead(V_CTRL_PIN)/1024.0;
+ }
+
+ /**
+  * get_fb_amnt()
+  * reads the feedback amount and scales from 0-1
+  */
+float get_fb_amnt() {
+  return analogRead(FB_AMNT_PIN)/1024.0;
+}
+
+/**
+ * get_mod_freq()
+ * read the frequency of the sin (am) modulator
+ * **This is the one we may make non-linear
+ * should go between 0-150 (150/1024=0.146484375)
+ */
+
+float get_mod_freq() {
+  return analogRead(MOD_FREQ_PIN)*0.146484375;
+}
+
