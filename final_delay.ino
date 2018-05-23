@@ -103,7 +103,7 @@ void loop() {
  * Reads the dry wet amount from analog reading the get dw pin and then scales it from 0-1
  */
 float get_dw_amount() {
-  return analogRead(DW_PIN)/1024.0;
+  return analogRead(DW_PIN)/1023.0;
 }
 
 /*
@@ -112,10 +112,10 @@ float get_dw_amount() {
  * calculated by dividing the analog read by 1024, and multiplying that by the max delay val
  * for our hardware (teensy 3.2), 449ms
  * 
- * 449/1024.0 = 0.4384765625
+ * 449/1023.0 = 0.4389051808406647
  */
  float get_delay_amount() {
-  return analogRead(D_AMNT_PIN)*0.4384765625;
+  return analogRead(D_AMNT_PIN)*0.4389;
  }
 
 /**
@@ -123,7 +123,7 @@ float get_dw_amount() {
  * reads the volume and scales from 0-1
  */
  float get_volume_ctrl() {
-  return analogRead(V_CTRL_PIN)/1024.0;
+  return analogRead(V_CTRL_PIN)/1023.0;
  }
 
  /**
@@ -131,17 +131,17 @@ float get_dw_amount() {
   * reads the feedback amount and scales from 0-1
   */
 float get_fb_amnt() {
-  return analogRead(FB_AMNT_PIN)/1024.0;
+  return analogRead(FB_AMNT_PIN)/1023.0;
 }
 
 /**
  * get_mod_freq()
  * read the frequency of the sin (am) modulator
  * **This is the one we may make non-linear
- * should go between 0-150 (150/1024=0.146484375)
+ * should go between 0-150 (150/1024=0.1466275659824)
  */
 
 float get_mod_freq() {
-  return analogRead(MOD_FREQ_PIN)*0.146484375;
+  return analogRead(MOD_FREQ_PIN)*0.1466275659824;
 }
 
