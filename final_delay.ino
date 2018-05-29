@@ -87,10 +87,27 @@ void loop() {
   Serial.print(",");
   Serial.println(AudioMemoryUsageMax());
 
+  //get the correct parameters
+  dry_wet_amount = get_dw_amount();
+  delay_amount = get_delay_amount();
+  volume_ctrl = get_volume_ctrl();
+  feedback_amount = get_fb_amnt();
+  mod_freq = get_mod_freq();
   
+  //set feedback amount
+  feedback_mixer.gain(0, 1);
+  feedback_mixer.gain(1, feedback_amount);
+
+  //set delay 1
+  delay1.delay(0, delay_amount);
   
-  
-  
+  //set modulation frequency 
+  sin_frequency_shifter.frequency(mod_freq);
+
+  //set dry/wet
+  dry_wet_mixer.gain(0, dry_wet_amount);
+  dry_wet_mixer.gain(1, 1-dry_wet_amount);
+
 }
 
 /**
