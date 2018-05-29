@@ -123,7 +123,8 @@ float get_dw_amount() {
  * reads the volume and scales from 0-1
  */
  float get_volume_ctrl() {
-  return analogRead(V_CTRL_PIN)/1023.0;
+  return analog
+  Read(V_CTRL_PIN)/1023.0;
  }
 
  /**
