@@ -31,11 +31,11 @@ float volume_ctrl;
 float feedback_amount;
 float mod_freq;
 
-const DW_PIN #error //which pin to control dry 
-const D_AMNT_PIN #error //which pin to control delay amount
-const V_CTRL_PIN #error //volume control pin
-const FB_AMNT_PIN #error //feedback amount pin
-const MOD_FREQ_PIN #error //which pin controls frequency of sinusoid
+const int DW_PIN  = 1; //which pin to control dry 
+const int D_AMNT_PIN = 2; //which pin to control delay amount
+const int V_CTRL_PIN = 3; //volume control pin
+const int FB_AMNT_PIN = 6; //feedback amount pin
+const int MOD_FREQ_PIN = 7; //which pin controls frequency of sinusoid
 
 
 void setup() {
@@ -93,7 +93,7 @@ void loop() {
   volume_ctrl = get_volume_ctrl();
   feedback_amount = get_fb_amnt();
   mod_freq = get_mod_freq();
-  
+  /*
   //set feedback amount
   feedback_mixer.gain(0, 1);
   feedback_mixer.gain(1, feedback_amount);
@@ -107,7 +107,7 @@ void loop() {
   //set dry/wet
   dry_wet_mixer.gain(0, dry_wet_amount);
   dry_wet_mixer.gain(1, 1-dry_wet_amount);
-
+  */
 }
 
 /**
@@ -140,8 +140,7 @@ float get_dw_amount() {
  * reads the volume and scales from 0-1
  */
  float get_volume_ctrl() {
-  return analog
-  Read(V_CTRL_PIN)/1023.0;
+  return analogRead(V_CTRL_PIN)/1023.0;
  }
 
  /**
