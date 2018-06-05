@@ -12,9 +12,9 @@ AudioMixer4              feedback_mixer;         //xy=367,148
 AudioSynthWaveformSine   sin_frequency_shifter;          //xy=476,368
 AudioOutputI2S           i2s2;           //xy=503.5,657.2499694824219
 AudioEffectMultiply      am_multiplier;      //xy=684,323
-AudioConnection          patchCord1(i2s1, 0, feedback_mixer, 0);
-AudioConnection          patchCord2(i2s1, 0, dry_wet_mixer, 0);
-AudioConnection          patchCord3(dry_wet_mixer, 0, i2s2, 0);
+AudioConnection          patchCord1(i2s1, 1, feedback_mixer, 0);
+AudioConnection          patchCord2(i2s1, 1, dry_wet_mixer, 0);
+AudioConnection          patchCord3(dry_wet_mixer, 0, i2s2, 1);
 AudioConnection          patchCord4(delay1, 0, am_multiplier, 0);
 AudioConnection          patchCord5(feedback_mixer, delay1);
 AudioConnection          patchCord6(sin_frequency_shifter, 0, am_multiplier, 1);
