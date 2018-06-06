@@ -31,17 +31,17 @@ float volume_ctrl;
 float feedback_amount;
 float mod_freq;
 
-const int DW_PIN  = 1; //which pin to control dry 
+const int DW_PIN  = 3; //which pin to control dry 
 const int D_AMNT_PIN = 2; //which pin to control delay amount
-const int V_CTRL_PIN = 3; //volume control pin
+const int V_CTRL_PIN = 1; //volume control pin
 const int FB_AMNT_PIN = 6; //feedback amount pin
 const int MOD_FREQ_PIN = 7; //which pin controls frequency of sinusoid
 
 
 void setup() {
-  AudioMemory(20); //We will reduce this based on test results
+  AudioMemory(25); //We will reduce this based on test results
   Serial.begin(9600);
-  while (!Serial) ;
+  //while (!Serial) ;
 
   dry_wet_amount = .5;
   volume_ctrl = .6;
@@ -73,10 +73,11 @@ void setup() {
   dry_wet_mixer.gain(1, 1-dry_wet_amount);
   
   sgtl5000_1.enable();
-  sgtl5000_1.volume(volume_ctrl);
+  sgtl5000_1.volume(1);
 }
 
 void loop() {
+  /*
   Serial.print("Processor usage: ");
   Serial.print(AudioProcessorUsage());
   Serial.print(",");
@@ -86,14 +87,15 @@ void loop() {
   Serial.print(AudioMemoryUsage());
   Serial.print(",");
   Serial.println(AudioMemoryUsageMax());
-
+  */
+  
   //get the correct parameters
   dry_wet_amount = get_dw_amount();
   delay_amount = get_delay_amount();
   volume_ctrl = get_volume_ctrl();
   feedback_amount = get_fb_amnt();
   mod_freq = get_mod_freq();
-  /*
+  
   //set feedback amount
   feedback_mixer.gain(0, 1);
   feedback_mixer.gain(1, feedback_amount);
@@ -104,10 +106,13 @@ void loop() {
   //set modulation frequency 
   sin_frequency_shifter.frequency(mod_freq);
 
-  //set dry/wet
-  dry_wet_mixer.gain(0, dry_wet_amount);
-  dry_wet_mixer.gain(1, 1-dry_wet_amount);
-  */
+  //set dry/wet & volume
+  dry_wet_mixer.gain(0, (dry_wet_amount)*volume_ctrl);
+  dry_wet_mixer.gain(1, (1-dry_wet_amount)*volume_ctrl);
+
+  Serial.print("feedback amount: ");
+  Serial.println(feedback_amount);
+  
 }
 
 /**
@@ -132,7 +137,7 @@ float get_dw_amount() {
  * 449/1023.0 = 0.4389051808406647
  */
  float get_delay_amount() {
-  return analogRead(D_AMNT_PIN)*0.4389;
+  return (1023-analogRead(D_AMNT_PIN))*0.4389;
  }
 
 /**
@@ -140,7 +145,7 @@ float get_dw_amount() {
  * reads the volume and scales from 0-1
  */
  float get_volume_ctrl() {
-  return analogRead(V_CTRL_PIN)/1023.0;
+  return (1023-analogRead(V_CTRL_PIN))/1023.0;
  }
 
  /**
@@ -148,7 +153,7 @@ float get_dw_amount() {
   * reads the feedback amount and scales from 0-1
   */
 float get_fb_amnt() {
-  return analogRead(FB_AMNT_PIN)/1023.0;
+  return (1023-analogRead(FB_AMNT_PIN))/1023.0;
 }
 
 /**
@@ -159,6 +164,6 @@ float get_fb_amnt() {
  */
 
 float get_mod_freq() {
-  return analogRead(MOD_FREQ_PIN)*0.1466275659824;
+  return (1023-analogRead(MOD_FREQ_PIN))*0.1466275659824;
 }
 
