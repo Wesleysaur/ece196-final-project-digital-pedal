@@ -9,7 +9,7 @@ AudioInputI2S            i2s1;           //xy=133,198
 AudioMixer4              dry_wet_mixer;         //xy=295.25,659
 AudioEffectDelay         delay1;         //xy=335,279
 AudioMixer4              feedback_mixer;         //xy=367,148
-AudioSynthWaveformSine   sin_frequency_shifter;          //xy=476,368
+AudioSynthWaveformSineHires   sin_frequency_shifter;          //xy=476,368
 AudioOutputI2S           i2s2;           //xy=503.5,657.2499694824219
 AudioEffectMultiply      am_multiplier;      //xy=684,323
 AudioConnection          patchCord1(i2s1, 1, feedback_mixer, 0);
@@ -34,12 +34,12 @@ float mod_freq;
 const int DW_PIN  = 3; //which pin to control dry 
 const int D_AMNT_PIN = 2; //which pin to control delay amount
 const int V_CTRL_PIN = 1; //volume control pin
-const int FB_AMNT_PIN = 6; //feedback amount pin
-const int MOD_FREQ_PIN = 7; //which pin controls frequency of sinusoid
+const int FB_AMNT_PIN = 7; //feedback amount pin
+const int MOD_FREQ_PIN = 6; //which pin controls frequency of sinusoid
 
 
 void setup() {
-  AudioMemory(25); //We will reduce this based on test results
+  AudioMemory(170); //We will reduce this based on test results
   Serial.begin(9600);
   //while (!Serial) ;
 
@@ -65,7 +65,7 @@ void setup() {
   delay1.disable(7);
   
   //Initialize audio effect parameters
-  sin_frequency_shifter.amplitude(1.0);
+  sin_frequency_shifter.amplitude(0.8);
   sin_frequency_shifter.phase(0);
   sin_frequency_shifter.frequency(0);
 
@@ -77,6 +77,7 @@ void setup() {
 }
 
 void loop() {
+
   /*
   Serial.print("Processor usage: ");
   Serial.print(AudioProcessorUsage());
@@ -110,7 +111,7 @@ void loop() {
   dry_wet_mixer.gain(0, (dry_wet_amount)*volume_ctrl);
   dry_wet_mixer.gain(1, (1-dry_wet_amount)*volume_ctrl);
 
-  Serial.print("feedback amount: ");
+  Serial.print("fb: ");
   Serial.println(feedback_amount);
   
 }
@@ -137,7 +138,7 @@ float get_dw_amount() {
  * 449/1023.0 = 0.4389051808406647
  */
  float get_delay_amount() {
-  return (1023-analogRead(D_AMNT_PIN))*0.4389;
+  return (1023-analogRead(D_AMNT_PIN))*0.3;
  }
 
 /**
@@ -153,6 +154,7 @@ float get_dw_amount() {
   * reads the feedback amount and scales from 0-1
   */
 float get_fb_amnt() {
+  //Serial.println(analogRead(FB_AMNT_PIN));
   return (1023-analogRead(FB_AMNT_PIN))/1023.0;
 }
 
@@ -164,6 +166,7 @@ float get_fb_amnt() {
  */
 
 float get_mod_freq() {
-  return (1023-analogRead(MOD_FREQ_PIN))*0.1466275659824;
+  Serial.println(analogRead(MOD_FREQ_PIN));
+  return (1023-analogRead(MOD_FREQ_PIN))*0.5;
 }
 
